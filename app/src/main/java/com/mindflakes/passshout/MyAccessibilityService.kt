@@ -13,12 +13,10 @@ class MyAccessibilityService : AccessibilityService() {
     }
     override fun onInterrupt() {
         Log.v(TAG, "Interrupt!!")
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        Log.v(TAG, "EVENT!!!")
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        Log.v(TAG, "EVENT!!! Type: ${event.eventType}" )
     }
 
 }
