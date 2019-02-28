@@ -66,7 +66,7 @@ class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
         val scannerBarCode = source.getChild(3).text.toString()
 
         if (scannerBarCode == lastBarCode) {
-            Log.d(TAG, "Debounce Barcode")
+            Log.i(TAG, "Debounce Barcode")
             source.recycle()
             return
         }
