@@ -77,6 +77,9 @@ class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
         Log.i(TAG, "Ticket Type: $scannerTicketType")
         mTextToSpeech.speak(scannerTicketType, TextToSpeech.QUEUE_ADD, null, scannerBarCode)
         Log.i(TAG, "Spoke $scannerTicketType")
+
+
+        source.recycle()
     }
 
 
