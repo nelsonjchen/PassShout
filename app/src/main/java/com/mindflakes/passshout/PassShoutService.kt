@@ -26,11 +26,11 @@ class PassShoutService : AccessibilityService() {
             source.recycle()
             return
         }
-        Log.i(TAG, "Source childCount is 5")
+        Log.d(TAG, "Source childCount is 5")
 
 //        https://stackoverflow.com/questions/36793154/accessibilityservice-not-returning-view-ids
         source.refresh()
-        Log.i(TAG, "Refresh Source Workaround")
+        Log.d(TAG, "Refresh Source Workaround")
 
 
         if (source.getChild(0).viewIdResourceName != "com.eventbrite.organizer:id/scanner_status_info_title") {
@@ -42,6 +42,8 @@ class PassShoutService : AccessibilityService() {
         val scannerStatusInfoTitle = source.getChild(0).text
 
         if (scannerStatusInfoTitle == "Already checked in") {
+            Log.i(TAG, "Already Checked In")
+
             source.recycle()
             return
         }
@@ -50,6 +52,7 @@ class PassShoutService : AccessibilityService() {
         val scannerBarCode = source.getChild(3).text.toString()
 
         if (scannerBarCode == lastBarCode) {
+            Log.d(TAG, "Debounce Barcode")
             source.recycle()
             return
         }
