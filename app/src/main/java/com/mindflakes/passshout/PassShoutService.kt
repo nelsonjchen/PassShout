@@ -46,38 +46,45 @@ class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
         source.refresh()
         Log.d(TAG, "Refresh Source Workaround")
 
-
-        if (source.getChild(0).viewIdResourceName != "com.eventbrite.organizer:id/scanner_status_info_title") {
+        val titleChild = source.getChild(0)
+        if (titleChild.viewIdResourceName != "com.eventbrite.organizer:id/scanner_status_info_title") {
+            titleChild.recycle()
             source.recycle()
             return
         }
-        Log.i(TAG, "Scanner Status Info Panel Detected")
 
-        val scannerStatusInfoTitle = source.getChild(0).text
+        Log.i(TAG, "Scanner Status Info Panel Detected")
+        val scannerStatusInfoTitle = titleChild.text
 
         if (scannerStatusInfoTitle == "Already checked in") {
             Log.i(TAG, "Already Checked In")
-
+            titleChild.recycle()
             source.recycle()
             return
         }
+        titleChild.recycle()
+
         Log.i(TAG, "Code not already Checked In")
 
-        val scannerBarCode = source.getChild(3).text.toString()
+        val barcodeChild = source.getChild(3)
+        val scannerBarCode = barcodeChild.text.toString()
 
         if (scannerBarCode == lastBarCode) {
             Log.i(TAG, "Debounce Barcode")
+            barcodeChild.recycle()
             source.recycle()
             return
         }
         lastBarCode = scannerBarCode
+        barcodeChild.recycle()
         Log.i(TAG, "Scanner Barcode: $scannerBarCode")
 
-        val scannerTicketType = source.getChild(2).text
+        val ticketTypeChild = source.getChild(2)
+        val scannerTicketType = ticketTypeChild.text
         Log.i(TAG, "Ticket Type: $scannerTicketType")
+        ticketTypeChild.recycle()
         mTextToSpeech.speak(scannerTicketType, TextToSpeech.QUEUE_ADD, null, scannerBarCode)
         Log.i(TAG, "Spoke $scannerTicketType")
-
 
         source.recycle()
     }
