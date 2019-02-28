@@ -1,16 +1,30 @@
 package com.mindflakes.passshout
 
 import android.accessibilityservice.AccessibilityService
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
-class PassShoutService : AccessibilityService() {
+class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
     val TAG = "PassShoutService"
     var lastBarCode = ""
+    private lateinit var mTextToSpeech: TextToSpeech
+
+    override fun onInit(status: Int) {
+    }
+
+    override fun onDestroy() {
+        // Shutdown TTS
+        mTextToSpeech.stop()
+        mTextToSpeech.shutdown()
+        super.onDestroy()
+    }
 
     override fun onServiceConnected() {
         Log.i(TAG, "Service Connected!!")
+        mTextToSpeech = TextToSpeech(this, this)
+
     }
 
     override fun onInterrupt() {
@@ -61,6 +75,8 @@ class PassShoutService : AccessibilityService() {
 
         val scannerTicketType = source.getChild(2).text
         Log.i(TAG, "Ticket Type: $scannerTicketType")
+        mTextToSpeech.speak(scannerTicketType, TextToSpeech.QUEUE_ADD, null, scannerBarCode)
+        Log.i(TAG, "Spoke $scannerTicketType")
     }
 
 
