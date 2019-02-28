@@ -22,6 +22,8 @@ Eventbrite success chime.
   service.
 * Enable the *PassShout* service.
 * Scan an **unchecked-in** ticket/pass in in the *Eventbrite Organizer*.
+   * There is a "debounce" mechanism to prevent saying the same pass type twice
+      for every unique barcode.
 
 
 ## Post-Usage
