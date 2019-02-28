@@ -7,49 +7,58 @@ import android.view.accessibility.AccessibilityNodeInfo
 
 class PassShoutService : AccessibilityService() {
     val TAG = "PassShoutService"
+    var lastBarCode = ""
+
     override fun onServiceConnected() {
-        super.onServiceConnected()
-        Log.v(TAG, "Service Connected!!")
+        Log.i(TAG, "Service Connected!!")
     }
+
     override fun onInterrupt() {
-        Log.v(TAG, "Interrupt!!")
+        Log.i(TAG, "Interrupt!!")
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        Log.v(TAG, "EVENT!!! Type: ${event.eventType}" )
+        Log.d(TAG, "Event Type: ${event.eventType}")
         val source: AccessibilityNodeInfo = event.source ?: return
-        Log.v(TAG, "Got source" )
+        Log.d(TAG, "Got source")
 
-        source.refresh()
-        Log.v(TAG, "Refresh Source")
-
-        for (i in 0 until source.childCount){
-            val child = source.getChild(i)
-            child.refresh()
-            Log.v(TAG, "${i}: resourceId: ${child.viewIdResourceName}, text: ${child.text}, childCount: ${child.childCount}")
-
+        if (source.childCount != 5) {
+            source.recycle()
+            return
         }
-//
-//        if (source.childCount != 3) {
-//            Log.v(TAG, "Child Count was ${source.childCount}" )
-//            source.recycle()
-//            return
-//        }
-//        Log.v(TAG, "Child Count is 3" )
-//
-//        val panelNode = source.getChild(3) ?: run {
-//            source.recycle()
-//            return
-//        }
-//        Log.v(TAG, "Got third child" )
-//
-//        if (panelNode.viewIdResourceName != "com.eventbrite.organizer:id/scanner_status_panel") {
-//            source.recycle()
-//            return
-//        }
-//        Log.v(TAG, "Got scanner status panel" )
-    }
+        Log.i(TAG, "Source childCount is 5")
 
+//        https://stackoverflow.com/questions/36793154/accessibilityservice-not-returning-view-ids
+        source.refresh()
+        Log.i(TAG, "Refresh Source Workaround")
+
+
+        if (source.getChild(0).viewIdResourceName != "com.eventbrite.organizer:id/scanner_status_info_title") {
+            source.recycle()
+            return
+        }
+        Log.i(TAG, "Scanner Status Info Panel Detected")
+
+        val scannerStatusInfoTitle = source.getChild(0).text
+
+        if (scannerStatusInfoTitle == "Already checked in") {
+            source.recycle()
+            return
+        }
+        Log.i(TAG, "Code not already Checked In")
+
+        val scannerBarCode = source.getChild(3).text.toString()
+
+        if (scannerBarCode == lastBarCode) {
+            source.recycle()
+            return
+        }
+        lastBarCode = scannerBarCode
+        Log.i(TAG, "Scanner Barcode: $scannerBarCode")
+
+        val scannerTicketType = source.getChild(2).text
+        Log.i(TAG, "Ticket Type: $scannerTicketType")
+    }
 
 
 }
