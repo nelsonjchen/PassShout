@@ -16,7 +16,7 @@ import androidx.media.AudioManagerCompat
 class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
 
     val TAG = "PassShoutService"
-    var lastBarCode = ""
+    private var lastBarCode = ""
     private lateinit var mTextToSpeech: TextToSpeech
     private lateinit var audioManager: AudioManager
 
@@ -102,18 +102,19 @@ class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
         }
 
         mTextToSpeech.setOnUtteranceProgressListener(
-            object: UtteranceProgressListener() {
+            object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {
                     // Nothing
                 }
 
                 override fun onError(utteranceId: String?) {
-                    // Nothing //To change body of created functions use File | Settings | File Templates.
+                    // Nothing
                 }
 
                 override fun onDone(utteranceId: String?) {
                     AudioManagerCompat.abandonAudioFocusRequest(
-                        audioManager, focusRequest)
+                        audioManager, focusRequest
+                    )
                 }
 
             }
