@@ -25,6 +25,10 @@ Eventbrite success chime.
    * There is a "debounce" mechanism to prevent saying the same pass type twice
       for every unique barcode.
 
+## Interesting Usage
+
+* The App will request audio focus and pause playback of "music" temporarily. This can be actual
+  music or a PSA welcoming guests and telling them to get their tickets out on a loop.
 
 ## Post-Usage
 * Uninstall the App after the event. The App is implemented in a low-power and
