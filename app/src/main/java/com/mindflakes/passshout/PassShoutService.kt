@@ -2,16 +2,16 @@ package com.mindflakes.passshout
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
-import android.media.AudioAttributes
 import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
+import java.util.*
+import kotlin.concurrent.schedule
 
 class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
 
@@ -94,39 +94,41 @@ class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
         Log.i(TAG, "Ticket Type: $scannerTicketType")
         ticketTypeChild.recycle()
 
-        val focusRequest = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN_TRANSIENT).run {
-            setOnAudioFocusChangeListener {
-                // I'm just here so I don't get fined.
-            }
-            build()
-        }
-
         mTextToSpeech.setOnUtteranceProgressListener(
             object : UtteranceProgressListener() {
+                private lateinit var focusRequest: AudioFocusRequestCompat
+
                 override fun onStart(utteranceId: String?) {
-                    // Nothing
+                    focusRequest = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN_TRANSIENT).run {
+                        setOnAudioFocusChangeListener {
+                            // I'm just here so I don't get fined.
+                        }
+                        build()
+                    }
+                    AudioManagerCompat.requestAudioFocus(audioManager, focusRequest)
+
                 }
 
                 override fun onError(utteranceId: String?) {
-                    // Nothing
-                }
-
-                override fun onDone(utteranceId: String?) {
                     AudioManagerCompat.abandonAudioFocusRequest(
                         audioManager, focusRequest
                     )
                 }
 
+                override fun onDone(utteranceId: String?) {
+                    Timer("DelayedFocusRequestAbandon", false).schedule(1000) {
+                        AudioManagerCompat.abandonAudioFocusRequest(
+                            audioManager, focusRequest
+                        )
+                    }
+
+                }
+
             }
         )
 
-        val requestAudioFocusResult = AudioManagerCompat.requestAudioFocus(audioManager, focusRequest)
-        if (requestAudioFocusResult == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            mTextToSpeech.speak(scannerTicketType, TextToSpeech.QUEUE_ADD, null, scannerBarCode)
-            Log.i(TAG, "Spoke $scannerTicketType")
-        } else {
-            Log.i(TAG, "Could not speak $scannerTicketType")
-        }
+        mTextToSpeech.speak(scannerTicketType, TextToSpeech.QUEUE_ADD, null, scannerBarCode)
+        Log.i(TAG, "Spoke $scannerTicketType")
 
 
         source.recycle()
