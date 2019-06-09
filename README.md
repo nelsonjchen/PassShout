@@ -1,8 +1,9 @@
 # PassShout
 
-*Currently only works with [EventBrite Organizer][eborg]. WIP*
+*Currently only works with [EventBrite Organizer][eborg].*
 
-This **Android** App speaks the Ticket Type or Pass Type of attendees checking in.
+This **Android** App speaks the Ticket Type or Pass Type of attendees checking in with
+the [Eventbrite Organizer app][eborg].
 
 Instead of having to squint at the tiny text saying the *Ticket Type* or *Pass
 Type*, this App will read it out loud after scanning.
@@ -27,10 +28,12 @@ Eventbrite success chime.
 
 ## Interesting Usage
 
-* The App will request audio focus and pause playback of "music" temporarily. This can be actual
-  music or a PSA welcoming guests and telling them to get their tickets out on a loop.
+* The App will request audio focus and pause playback of "background audio" temporarily. This can be 
+  music or a PSA telling guests to get their tickets out on a loop. This functionality was tested 
+  with VLC for Android and other music applications. 
 
 ## Post-Usage
+
 * Uninstall the App after the event. The App is implemented in a low-power and
   efficient manner but the nature of its implementation means it can stay
   running unless uninstalled.
