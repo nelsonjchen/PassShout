@@ -90,7 +90,9 @@ class PassShoutService : AccessibilityService(), TextToSpeech.OnInitListener {
         Log.i(TAG, "Scanner Barcode: $scannerBarCode")
 
         val ticketTypeChild = source.getChild(2)
-        val scannerTicketType = ticketTypeChild.text
+        var scannerTicketType = ticketTypeChild.text
+//        Hack to remove parenthesis
+        scannerTicketType = scannerTicketType.replace(Regex("\\(.*\\)"), "")
         Log.i(TAG, "Ticket Type: $scannerTicketType")
         ticketTypeChild.recycle()
 
